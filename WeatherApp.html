@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .weather-container {
+      text-align: center;
+      background-color: #ffffffcc;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      width: 320px;
+      transition: transform 0.3s ease;
+    }
+
+    .weather-container:hover {
+      transform: translateY(-4px);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 90%;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+      display: none;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .weather-info p {
+      margin: 6px 0;
+      font-size: 17px;
+      color: #222;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="weather-container">
+    <h1>🌦️ Weather App</h1>
+    <input type="text" id="location" placeholder="Enter location (e.g., London)">
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="weather-info" class="weather-info">
+      <p id="temperature"></p>
+      <p id="city"></p>
+      <p id="condition"></p>
+    </div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const location = document.getElementById('location').value;
+      const apiKey = 'ab0cfc4da61c4b44aea92302250302';
+      const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+          alert('❌ Location not found. Please try again.');
+          return;
+        }
+
+        const temperature = data.current.temp_c;
+        const city = data.location.name;
+        const condition = data.current.condition.text;
+
+        document.getElementById('temperature').textContent = `🌡️ Temperature: ${temperature}°C`;
+        document.getElementById('city').textContent = `📍 Location: ${city}`;
+        document.getElementById('condition').textContent = `🌤️ Condition: ${condition}`;
+
+        const weatherInfo = document.getElementById('weather-info');
+        weatherInfo.style.display = 'block';
+      } catch (error) {
+        alert('⚠️ Error fetching weather data. Please try again.');
+      }
+    }
+  </script>
+
+</body>
+</html>
